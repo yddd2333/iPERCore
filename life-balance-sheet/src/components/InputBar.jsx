@@ -1,11 +1,15 @@
-import { Send } from 'lucide-react';
+import { Send } from 'lucide-react'
 
 function InputBar({ value, onChange, onSubmit, loading }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !loading) {
-      onSubmit();
+      onSubmit()
     }
-  };
+  }
+
+  const buttonClass = loading
+    ? 'flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition-colors animate-pulse'
+    : 'flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition-colors'
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/80 backdrop-blur-lg border-t border-white/10 p-4">
@@ -18,22 +22,13 @@ function InputBar({ value, onChange, onSubmit, loading }) {
           onChange={onChange}
           onKeyDown={handleKeyDown}
         />
-        <button
-          type="button"
-          className={
-            loading
-              ? 'flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition-colors animate-pulse'
-              : 'flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition-colors'
-          }
-          onClick={onSubmit}
-          disabled={loading}
-        >
+        <button type="button" className={buttonClass} onClick={onSubmit} disabled={loading}>
           <Send size={18} />
           {loading ? 'AI 分析中...' : '提交测算'}
         </button>
       </div>
     </div>
-  );
+  )
 }
 
-export default InputBar;
+export default InputBar

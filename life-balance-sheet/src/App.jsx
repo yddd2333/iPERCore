@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Wallet, Heart, Brain } from 'lucide-react'
 import TotalPanel from './components/TotalPanel'
 import AssetCard from './components/AssetCard'
@@ -6,76 +6,80 @@ import RadarChartCard from './components/RadarChartCard'
 import AreaChartCard from './components/AreaChartCard'
 import Toast from './components/Toast'
 import InputBar from './components/InputBar'
+import {
+  INITIAL_ASSETS,
+  INITIAL_HISTORY,
+  ANALYZE_DELAY,
+  TOAST_DURATION,
+  HIGHLIGHT_DURATION,
+  analyzeInput,
+  computeTotal,
+} from './lib/logic'
 
 function App() {
-  const [assets, setAssets] = useState({ financial: 3000, health: 4000, cognitive: 3000 })
-  const [history, setHistory] = useState([{ day: '1', total: 10000 }])
+  const [assets, setAssets] = useState(INITIAL_ASSETS)
+  const [history, setHistory] = useState(INITIAL_HISTORY)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState({ message: '', visible: false })
   const [highlights, setHighlights] = useState({ financial: '', health: '', cognitive: '' })
 
-  const totalLVC = assets.financial + assets.health + assets.cognitive
+  // 用 ref 保存所有定时器，组件卸载时统一清理，避免内存泄漏
+  const timersRef = useRef([])
+
+  const totalLVC = computeTotal(assets)
+
+  // 清理所有定时器
+  const clearAllTimers = () => {
+    timersRef.current.forEach((t) => clearTimeout(t))
+    timersRef.current = []
+  }
 
   const showToast = (message) => {
     setToast({ message, visible: true })
-    setTimeout(() => {
-      setToast((prev) => ({ ...prev, visible: false }))
-    }, 3000)
+    timersRef.current.push(
+      setTimeout(() => {
+        setToast((prev) => ({ ...prev, visible: false }))
+      }, TOAST_DURATION)
+    )
   }
 
   const triggerHighlight = (keys, color) => {
     const newHighlights = { financial: '', health: '', cognitive: '' }
-    keys.forEach((k) => { newHighlights[k] = color })
+    keys.forEach((k) => {
+      newHighlights[k] = color
+    })
     setHighlights(newHighlights)
-    setTimeout(() => {
-      setHighlights({ financial: '', health: '', cognitive: '' })
-    }, 800)
+    timersRef.current.push(
+      setTimeout(() => {
+        setHighlights({ financial: '', health: '', cognitive: '' })
+      }, HIGHLIGHT_DURATION)
+    )
   }
 
   const handleSubmit = () => {
     if (!input.trim() || loading) return
 
+    // 提前捕获输入文本，避免清空后丢失
+    const text = input.trim()
     setInput('')
     setLoading(true)
 
-    setTimeout(() => {
-      const text = input.trim()
-
-      if (/熬夜|加班|通宵/.test(text)) {
-        setAssets((prev) => ({
-          ...prev,
-          health: prev.health - 800,
-          financial: prev.financial + 500,
-        }))
-        setHistory((prev) => [
-          ...prev,
-          { day: String(prev.length + 1), total: totalLVC - 800 + 500 },
-        ])
-        showToast('⚠️ 内卷警告：消耗健康换取微薄财务，不值得')
-        triggerHighlight(['health', 'financial'], 'bg-rose-500/20')
-      } else if (/健身|跑步|运动/.test(text)) {
-        setAssets((prev) => ({ ...prev, health: prev.health + 400 }))
-        setHistory((prev) => [
-          ...prev,
-          { day: String(prev.length + 1), total: totalLVC + 400 },
-        ])
-        showToast('✨ 优质定投：健康资产稳步提升')
-        triggerHighlight(['health'], 'bg-emerald-500/20')
-      } else if (/读书|学习|上课/.test(text)) {
-        setAssets((prev) => ({ ...prev, cognitive: prev.cognitive + 500 }))
-        setHistory((prev) => [
-          ...prev,
-          { day: String(prev.length + 1), total: totalLVC + 500 },
-        ])
-        showToast('✨ 优质定投：认知资产稳步提升')
-        triggerHighlight(['cognitive'], 'bg-blue-500/20')
-      } else {
-        showToast('🤔 未识别到有效行为，试试描述你的日常')
-      }
-
-      setLoading(false)
-    }, 1200)
+    timersRef.current.push(
+      setTimeout(() => {
+        // 使用最新 assets/history 进行一次性原子计算，修复原实现中 history 与 assets 不同步的 bug
+        const result = analyzeInput(text, assets, history)
+        if (result.matched) {
+          setAssets(result.assets)
+          setHistory(result.history)
+        }
+        showToast(result.toast)
+        if (result.highlight.keys.length > 0) {
+          triggerHighlight(result.highlight.keys, result.highlight.color)
+        }
+        setLoading(false)
+      }, ANALYZE_DELAY)
+    )
   }
 
   return (

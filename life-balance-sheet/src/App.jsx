@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Wallet, Heart, Brain } from 'lucide-react'
 import TotalPanel from './components/TotalPanel'
 import AssetCard from './components/AssetCard'
+import RadarChartCard from './components/RadarChartCard'
+import AreaChartCard from './components/AreaChartCard'
 
 function App() {
   const [assets, setAssets] = useState({ financial: 3000, health: 4000, cognitive: 3000 })
@@ -32,6 +34,10 @@ function App() {
             Icon={Brain}
             color="bg-blue-500/20 text-blue-400"
           />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <RadarChartCard assets={assets} />
+          <AreaChartCard history={history} />
         </div>
       </div>
     </div>

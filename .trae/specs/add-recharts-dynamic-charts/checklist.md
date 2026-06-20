@@ -1,0 +1,23 @@
+# Checklist
+
+- [x] `recharts` 已安装并出现在 `package.json` 的 dependencies 中
+- [x] 新建 `src/components/RadarChartCard.jsx` 组件，接收 `assets` prop
+- [x] 雷达图数据为五维数组：财务、身体、心理、技能、体验
+- [x] 心理维度 = assets.health * 0.6，体验维度 = assets.cognitive * 0.6
+- [x] 雷达图使用 `ResponsiveContainer width="100%" height={300}` 包裹
+- [x] `PolarGrid` 使用 `stroke="#334155"`
+- [x] `Radar` 填充使用 `fill="#3b82f6" fillOpacity={0.4}`
+- [x] 雷达图 Tooltip 的 `contentStyle` 背景为 `#1e293b`、浅色边框
+- [x] 新建 `src/components/AreaChartCard.jsx` 组件，接收 `history` prop
+- [x] 面积图使用 `ResponsiveContainer width="100%" height={300}` 包裹
+- [x] 面积图定义 `<defs>` 线性渐变（`#3b82f6` → 透明）
+- [x] `Area` 使用 `type="monotone"` 平滑折线
+- [x] `XAxis` 与 `YAxis` 均设置 `tickLine={false}`
+- [x] 面积图 Tooltip 的 `contentStyle` 背景为 `#1e293b`、浅色边框
+- [x] 两个图表卡片均使用玻璃拟态容器（`bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6`）
+- [x] App.jsx 在资产卡片下方新增左右等宽两栏布局（`grid grid-cols-1 md:grid-cols-2 gap-6`）
+- [x] 左栏渲染 RadarChartCard 并传入 `assets`，右栏渲染 AreaChartCard 并传入 `history`
+- [x] 雷达图随 `assets` 状态变化自动更新
+- [x] 面积图随 `history` 状态变化自动更新
+- [x] `npm run dev` 可成功启动且控制台无报错
+- [x] 图表高度为 300px，无高度坍塌

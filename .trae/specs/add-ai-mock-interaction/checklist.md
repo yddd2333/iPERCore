@@ -1,0 +1,26 @@
+# Checklist
+
+- [x] 新建 `src/components/Toast.jsx`，接收 `message` 与 `visible` props
+- [x] Toast 使用 `fixed top-6 left-1/2 -translate-x-1/2 z-50` 定位顶部中央
+- [x] Toast 使用玻璃拟态样式
+- [x] 新建 `src/components/InputBar.jsx`，接收 `onSubmit` 与 `loading` props
+- [x] InputBar 底部固定布局 `fixed bottom-0 left-0 right-0`
+- [x] InputBar 含文本输入框与带 `Send` 图标的"提交测算"按钮
+- [x] loading 为 true 时按钮文字变"AI 分析中..."并添加 `animate-pulse`
+- [x] AssetCard 新增 `highlight` prop 支持背景高亮
+- [x] AssetCard 高亮使用 `transition-colors duration-500`
+- [x] App.jsx 新增 input、loading、toast、highlights 状态
+- [x] 提交后清空输入框并进入 loading 态 1.2 秒
+- [x] 正则匹配"熬夜/加班/通宵"：健康 -800，财务 +500
+- [x] 正则匹配"健身/跑步/运动"：健康 +400
+- [x] 正则匹配"读书/学习/上课"：认知 +500
+- [x] 资产更新后 push 新总分到 history，day 递增
+- [x] 资产更新后显示 Toast 评价，3 秒后自动消失
+- [x] 熬夜类 Toast 文案："⚠️ 内卷警告：消耗健康换取微薄财务，不值得"
+- [x] 健身类 Toast 文案："✨ 优质定投：健康资产稳步提升"
+- [x] 学习类 Toast 文案："✨ 优质定投：认知资产稳步提升"
+- [x] 无匹配 Toast 文案："🤔 未识别到有效行为，试试描述你的日常"
+- [x] 被改变数值的卡片触发背景高亮闪烁
+- [x] 空输入不触发分析流程
+- [x] 主容器底部留 padding 防止输入框遮挡
+- [x] `npm run dev` 可成功启动且控制台无报错

@@ -1,6 +1,6 @@
-function AssetCard({ title, value, Icon, color }) {
+function AssetCard({ title, value, Icon, color, highlight = '' }) {
   return (
-    <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6">
+    <div className={`${highlight ? highlight : 'bg-white/5'} backdrop-blur-lg border border-white/10 rounded-2xl p-6 transition-colors duration-500`}>
       <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-black/20 ${color}`}>
         <Icon />
       </div>
